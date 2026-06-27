@@ -699,6 +699,12 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const data = JSON.parse(jsonStr);
       
+      // Add preview-mode class to hide configuration controls
+      const appContainer = document.querySelector(".app-container");
+      if (appContainer) {
+        appContainer.classList.add("preview-mode");
+      }
+      
       // Override DOM states with shared data
       if (data.h) inputHappy.value = data.h;
       if (data.b) inputBirthday.value = data.b;

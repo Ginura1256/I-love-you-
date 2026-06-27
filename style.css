@@ -1396,3 +1396,30 @@ input:checked + .slider:before {
     margin-top: 8px;
   }
 }
+
+/* ==========================================================================
+   PREVIEW MODE OVERRIDES (FOR SHARED LINKS)
+   ========================================================================== */
+.preview-mode .app-header,
+.preview-mode .control-section,
+.preview-mode .preview-section .section-title,
+.preview-mode .app-footer-bar {
+  display: none !important;
+}
+
+.preview-mode .grid-layout {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex: 1;
+  width: 100%;
+  margin: 0;
+}
+
+.preview-mode .app-container {
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 100vh !important;
+  display: flex !important;
+}
