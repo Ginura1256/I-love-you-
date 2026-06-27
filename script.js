@@ -684,11 +684,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const jsonStr = JSON.stringify(data);
       // Safe base64 conversion supporting UTF-8 emoji characters
-      const base64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+      let base64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
         return String.fromCharCode(parseInt(p1, 16));
       }));
+      // Make base64 URL-safe to prevent corruption in chat apps
+      base64 = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
       
-      const shareUrl = `${window.location.origin}${window.location.pathname}?gift=${base64}`;
+      // Auto-fallback from localhost to live GitHub Pages link for convenience on mobile
+      let baseUrl = window.location.origin + window.location.pathname;
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        baseUrl = "https://ginura1256.github.io/nimna-birthday/";
+      }
+      
+      const shareUrl = `${baseUrl}?gift=${base64}`;
       shareUrlInput.value = shareUrl;
     } catch (e) {
       console.error("Encoding error: ", e);
@@ -702,8 +710,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!giftData) return;
 
     try {
+      // Restore standard base64 characters from URL-safe format
+      let base64 = giftData.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = base64.length % 4;
+      if (pad) {
+        base64 += '='.repeat(4 - pad);
+      }
+
       // Decode Base64 safely
-      const jsonStr = decodeURIComponent(atob(giftData).split("").map((c) => {
+      const jsonStr = decodeURIComponent(atob(base64).split("").map((c) => {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       }).join(""));
       
